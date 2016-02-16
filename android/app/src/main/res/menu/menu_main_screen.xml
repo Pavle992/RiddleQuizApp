@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.pavle92.riddlequizapp.MainScreenActivity">
+    <item android:id="@+id/show_map" android:title="@string/show_map"
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action_map"/>
+    <item android:id="@+id/refresh" android:title="Get places from server"
+        android:orderInCategory="100"  android:icon="@drawable/ic_action_refresh" app:showAsAction="ifRoom"/>
+    <item android:id="@+id/highscore" android:title="@string/highscore"
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action_view_as_list"/>
+    <item android:id="@+id/myplaces" android:title="@string/myplaces"
+        android:orderInCategory="100" app:showAsAction="never"/>
+    <item android:id="@+id/myfriends" android:title="@string/myfriends"
+        android:orderInCategory="100" app:showAsAction="never"/>
+    <item android:id="@+id/about" android:title="@string/about"
+        android:orderInCategory="100" app:showAsAction="never"/>
+</menu>

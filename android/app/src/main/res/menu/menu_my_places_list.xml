@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.pavle92.riddlequizapp.MyPlacesList">
+     <item android:id="@+id/show_map_item" android:title="@string/show_map"
+    android:orderInCategory="100" app:showAsAction="ifRoom"
+    android:icon="@drawable/ic_action_map"/>
+    <item android:id="@+id/new_place_item" android:title="Refresh Places"
+        android:orderInCategory="100" app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_refresh"/>
+    <item android:id="@+id/about_item" android:title="About"
+        android:orderInCategory="100" app:showAsAction="never"
+        android:icon="@drawable/ic_action_about"/>
+</menu>

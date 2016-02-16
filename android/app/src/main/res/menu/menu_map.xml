@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.pavle92.riddlequizapp.MapsActivity">
+
+    <item android:id="@+id/search" android:title="@string/show_map"
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action"/>
+
+</menu>

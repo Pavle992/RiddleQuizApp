@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.pavle92.riddlequizapp.NewPlace">
+   <ScrollView
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <TextView android:text="Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etxName"
+        android:inputType="text"
+        android:layout_marginBottom="15dp"/>
+    <TextView android:text="Ridle"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content" />
+    <EditText
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/etxRidle"
+          android:inputType="text"
+          android:layout_marginBottom="15dp"
+          android:autoText="true" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Solution:"
+        android:layout_marginBottom="15dp"/>
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etxSolution"
+            android:inputType="text"
+            android:layout_marginBottom="15dp"
+            android:autoText="true" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Hint:"
+            android:layout_marginBottom="15dp"/>
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etxHint"
+            android:inputType="text"
+            android:layout_marginBottom="15dp"
+            android:autoText="true" />
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+
+            <Button
+            android:text="OK"
+            android:id="@+id/btnNewPlaceOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+            <Button
+               android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+            <Button
+                android:text="Cancle"
+                android:id="@+id/btnNewPlaceCancle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               android:layout_weight="1"/>
+        </TableRow>
+            </TableLayout>
+    </LinearLayout>
+   </ScrollView>
+</RelativeLayout>

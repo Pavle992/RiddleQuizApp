@@ -28,7 +28,7 @@ public class GuestActivity extends Activity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent si=new Intent(GuestActivity.this,SignUpActivity.class);
+                Intent si=new Intent(GuestActivity.this,SignUpOptionActivity.class);
                 startActivity(si);
             }
         });

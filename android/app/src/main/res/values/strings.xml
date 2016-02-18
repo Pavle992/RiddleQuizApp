@@ -24,4 +24,6 @@
     <string name="title_activity_intro">IntroActivity</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_search">Search</string>
+    <string name="credentials">Enter credentials</string>
+    <string name="fb_signup">Sign up with Facebook</string>
 </resources>

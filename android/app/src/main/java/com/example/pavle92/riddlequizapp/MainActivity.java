@@ -51,11 +51,15 @@ public class MainActivity extends Activity
                 String user=etxUser.getText().toString();
                 String pass=etxPass.getText().toString();
 
-                if(isOnline())
-                    getPlayer();
-                else
+                if(isOnline()) {
+                    if(!user.equals("") && !pass.equals(""))
+                        getPlayer();
+                    else
+                        MakeToast("Username and password fields must be entered");
+                }
+                else {
                     MakeToast("Enable internet connection!");
-
+                }
 
 
 

@@ -14,8 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,13 +39,51 @@ public class MainActivity extends Activity
     ImageView im;
     private ProgressDialog pd;
 
+
+    ///FACEBOOK login components
+    private CallbackManager mCallbackManager;
+    FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+
+            AccessToken accessToken=loginResult.getAccessToken();
+            Profile profile=Profile.getCurrentProfile();
+            if(profile!=null){
+
+                Toast.makeText(MainActivity.this, "Cao "+profile.getName(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };
+
+    LoginButton loginButton;
+    /// FACEBOOK login part ended
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        mCallbackManager=CallbackManager.Factory.create();
         setContentView(R.layout.activity_main);
+        //after view created
+        //FACEBOOK login part
 
+        loginButton= (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("user_friends");
+//        loginButton.setFragment(this);
+        loginButton.registerCallback(mCallbackManager,mCallback);
+        //FACEBOOK login part ended
         context=this;
         guiThread= new Handler();
         pd=new ProgressDialog(MainActivity.this);
@@ -166,5 +212,11 @@ public class MainActivity extends Activity
 
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode,resultCode,data);
     }
 }

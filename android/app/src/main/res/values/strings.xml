@@ -19,6 +19,7 @@
     <string name="myplaces">My Places</string>
     <string name="myfriends">My Friends</string>
     <string name="about">About</string>
+    <string name="scan">Scan</string>
     <string name="title_activity_friends">My Friends</string>
     <string name="title_activity_mapa">Map</string>
     <string name="title_activity_intro">IntroActivity</string>

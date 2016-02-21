@@ -148,6 +148,12 @@ public class MainScreenActivity extends ActionBarActivity {
             in.putExtra("UserName",userName);
             startActivity(in);
         }
+        else if(id==R.id.scan)
+        {
+            Intent in = new Intent(this, ScanActivity.class);
+//            in.putExtra("UserName",userName);
+            startActivity(in);
+        }
         return super.onOptionsItemSelected(item);
     }
     private  void guiProgressStart(final String msg)

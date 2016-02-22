@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.Scene;
 import android.widget.ProgressBar;
 
 
@@ -47,7 +48,10 @@ public class IntroActivity extends Activity {
                         }
                     }
 
-                    startActivity(in);
+                startActivity(in);
+
+
+
                     finish();
 
                 }

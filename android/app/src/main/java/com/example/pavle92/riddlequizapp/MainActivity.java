@@ -189,7 +189,7 @@ public class MainActivity extends Activity
     }
     public void getPlayer(final Profile pr)
     {
-        final String username=pr.getName();
+        final String username=profile.getFirstName()+profile.getLastName();//!!! pr.getName();
         final String password= Integer.toString(pr.hashCode()).substring(0, 1);
         player=null;
         Thread trd=new Thread(
@@ -198,7 +198,7 @@ public class MainActivity extends Activity
             @Override
             public void run() {
                 try {
-                    guiProgressStart();
+//                    guiProgressStart();
                     player = MyPlacesHTTPHelper.SendUserAndPass(username, password);
                     Log.e("OOO", player.getIme() + " " + player.getPrezime());
 //                    guiNotifyUserFB();
@@ -296,10 +296,11 @@ public class MainActivity extends Activity
                     ExecutorService transThread = Executors.newSingleThreadExecutor();
                     String name = profile.getFirstName();
                     String lastName = profile.getLastName();
-                    String user = profile.getName();
+                    String user = profile.getFirstName()+profile.getLastName();//profile.getName();//!!! mora spojeno
                     String pass = Integer.toString(profile.hashCode()).substring(0,1);
                     String number = "000";
-                    Bitmap imageBitmap=((BitmapDrawable)iv.getDrawable()).getBitmap();
+                    try {
+                        Bitmap imageBitmap = ((BitmapDrawable) iv.getDrawable()).getBitmap();
 
                     if (isOnline()) {
                         player = new Player(name, lastName, user, pass, Integer.parseInt(number), imageBitmap);
@@ -334,6 +335,10 @@ public class MainActivity extends Activity
                         Toast.makeText(getApplicationContext(), "Enable internet connection!", Toast.LENGTH_SHORT).show();
 
                     //SIGN UP PROCEDURE END
+                    }
+                    catch (Exception ex){
+                        ex.printStackTrace();
+                    }
                 }
 
             }

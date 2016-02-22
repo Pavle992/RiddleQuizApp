@@ -241,7 +241,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnCamer
 
                     Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getUser()).snippet("UserName: " + p.getUser()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person)));
                     markersPos.add(m);
-                    Log.e("Timer1", "Timer1");
+                    Log.e("Timer1", "Timer1"+ p.getIme());
                 }
             }
         });
@@ -362,7 +362,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnCamer
                     String[] imena = ime.split(" ");
                     for (Place p : places)
                     {
-                        //     Log.e("Mesto",p.getName());
+                             Log.e("Mesto",p.getName());
 
                         for (String in : imena)
                         {

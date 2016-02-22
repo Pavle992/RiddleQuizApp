@@ -115,7 +115,9 @@ public class MyPlacesList extends ActionBarActivity implements  ListView.OnItemC
                 lista.add(p.getName());
                 Log.e("TTTTT",p.getLatitude()+" "+p.getLongitude());
             }
-            myPlaceList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lista));
+            final ArrayAdapter<String> listAd= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lista);
+            myPlaceList.setAdapter(listAd);
+
         }
         else
             Toast.makeText(this,"No places",Toast.LENGTH_SHORT).show();

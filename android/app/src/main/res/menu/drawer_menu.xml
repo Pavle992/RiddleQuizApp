@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_attachment"
+            android:checked="true"
+            android:icon="@drawable/abc_btn_rating_star_on_mtrl_alpha"
+            android:title="@string/highscore" />
+        <item
+            android:id="@+id/my_location"
+            android:icon="@drawable/ic_action_current_location"
+            android:title="@string/cur_loc" />
+        <item
+            android:id="@+id/navigation_item_images"
+            android:icon="@drawable/ic_action_map"
+            android:title="@string/myplaces" />
+        <item
+            android:id="@+id/navigation_item_location"
+            android:icon="@drawable/ic_action_all_friends_512"
+            android:title="@string/myfriends" />
+
+        <item
+            android:id="@+id/scannn"
+            android:icon="@drawable/ic_action_2_512"
+            android:title="@string/scan" />
+    </group>
+
+    <item android:title="@string/nav_sub_menu">
+        <menu>
+            <item
+                android:id="@+id/about_user"
+                android:icon="@drawable/ic_action_about"
+                android:title="@string/about" />
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_action_logout"
+                android:title="@string/logout" />
+
+        </menu>
+    </item>
+
+</menu>

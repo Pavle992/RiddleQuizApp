@@ -1,18 +1,30 @@
 package com.example.pavle92.riddlequizapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,31 +32,106 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class MainScreenActivity extends ActionBarActivity {
+public class MainScreenActivity extends AppCompatActivity {
+
+    public static final String PREFS_NAME = "LoginPrefs";
 
     private String userName;
     private Handler guiThread;
     DBAdapterPlaces dbAdapter;
     private ProgressDialog pd;
+    private Bitmap profPic;
+
+    //MENU MENI
+    private DrawerLayout mDrawerLayout;
+    private ImageView prfpc;
+    private TextView usrnm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+
+        //MENU MENI
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        prfpc= (ImageView) findViewById(R.id.userPctr);
+        usrnm= (TextView) findViewById(R.id.userNm);
+        //TOOLBAR
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_home_black_24dp);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        //TOOLBAR END
+
+
+        //NAVIGATION VIEW
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+//                Toast.makeText(MainScreenActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
+
+                int id=menuItem.getItemId();
+
+
+                if (id == R.id.logout)
+                {
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.remove("logged");
+                    editor.commit();
+
+
+                    Intent in =new Intent(MainScreenActivity.this,MainActivity.class);
+                    startActivity(in);
+                    finish();
+                }
+
+
+                return true;
+            }
+        });
+        //NAVIGATION VIEW
+
         ImageView img=(ImageView)findViewById(R.id.imageView2);
         img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
 
         userName="";
+        profPic=null;
         guiThread=new Handler();
         pd=new ProgressDialog(MainScreenActivity.this);
 
-        Bundle bnd=getIntent().getExtras();
-        if(bnd!=null)
-            userName=bnd.getString("UserName");
+        //Bundle bnd=getIntent().getExtras();
+        //Shared pref
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        userName=settings.getString("UserName","");
+        profPic=Ba64StringToBitmap(settings.getString("UserPicture",""));
+//        if(bnd!=null) {
+//            userName = bnd.getString("UserName");
+//            profPic=(Bitmap)bnd.getParcelable("UserPicture");
+//
+//        }
         Log.e("User1", userName);
 
         dbAdapter=new DBAdapterPlaces(MainScreenActivity.this,userName);
+
+        //MENU MENI
+        if(profPic!= null){
+            prfpc.setImageBitmap(profPic);
+        }
+        if(userName!= null){
+            usrnm.setText(userName);
+        }
+
+
+
 
  //       dbAdapter.OpenDB();
  //       dbAdapter.ClearAll();
@@ -66,6 +153,17 @@ public class MainScreenActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+
+        //MENU MENI
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                return true;
+        }
+
 
         if(id==R.id.show_map)
         {
@@ -97,39 +195,32 @@ public class MainScreenActivity extends ActionBarActivity {
             transThread.submit(new Runnable() {
                 @Override
                 public void run() {
-                    try
-                    {
+                    try {
                         guiProgressStart("Getting places from server");
-                        ArrayList<Place> places=MyPlacesHTTPHelper.getPlaces(userName);
-                        Log.e("userName",userName);
+                        ArrayList<Place> places = MyPlacesHTTPHelper.getPlaces(userName);
+                        Log.e("userName", userName);
                         dbAdapter.OpenDB();
-                        ArrayList<Place> placesAll=dbAdapter.getPlaceses();
-                        for (Place place:places)
-                        {
-                            Log.e("MestoServer  ",place.getName());
-                            int ima=0;
-                            for (Place p : placesAll)
-                            {
-                                Log.e("MestoBaza  ",p.getName());
+                        ArrayList<Place> placesAll = dbAdapter.getPlaceses();
+                        for (Place place : places) {
+                            Log.e("MestoServer  ", place.getName());
+                            int ima = 0;
+                            for (Place p : placesAll) {
+                                Log.e("MestoBaza  ", p.getName());
                                 if (place.getLongitude().equals(p.getLongitude()) && place.getLatitude().equals(p.getLatitude()))
-                                    ima=1;
+                                    ima = 1;
                             }
-                            if(ima==0)
-                            {
+                            if (ima == 0) {
                                 dbAdapter.SavePlace(place);
-                                Log.e("Dodato  ", place.getName()+" "+place.getLongitude()+" "+place.getLatitude());
-                            }
-                            else
-                                Log.e("NIJE!Dodato  ",place.getName());
+                                Log.e("Dodato  ", place.getName() + " " + place.getLongitude() + " " + place.getLatitude());
+                            } else
+                                Log.e("NIJE!Dodato  ", place.getName());
                         }
 
                         dbAdapter.CloseDB();
 
                         guiNotifyUser("Places downloaded!");
 
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -209,5 +300,10 @@ public class MainScreenActivity extends ActionBarActivity {
                 });
 
         alertDialog.show();
+    }
+    private Bitmap Ba64StringToBitmap(String encoded){
+        byte[] imageAsBytes = Base64.decode(encoded.getBytes(), Base64.DEFAULT);
+        Bitmap retb= BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+        return retb;
     }
 }

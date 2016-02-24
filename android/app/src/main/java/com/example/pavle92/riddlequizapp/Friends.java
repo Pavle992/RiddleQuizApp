@@ -1,5 +1,6 @@
 package com.example.pavle92.riddlequizapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -31,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class Friends extends ActionBarActivity
+public class Friends extends Activity
 {
     ArrayList<Player> players;
     ListView lvPaired,lvShow;

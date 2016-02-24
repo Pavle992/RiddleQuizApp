@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class MyPlacesList extends ActionBarActivity implements  ListView.OnItemClickListener {
+public class MyPlacesList extends Activity implements  ListView.OnItemClickListener {
 
     ArrayList<Place> places;
     ArrayList<String> lista;

@@ -24,7 +24,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/AppTheme">
+       <!-- android:theme="@style/Theme.AppCompat.Light"-->
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -33,21 +35,23 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainScreenActivity"
-            android:label="@string/title_activity_main_screen" />
+            android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme1" />
         <activity
             android:name=".Friends"
-            android:label="@string/title_activity_friends" />
+            android:label="@string/title_activity_friends"
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -55,7 +59,8 @@
 
         <activity
             android:name=".HighScore"
-            android:label="@string/title_activity_mapa" />
+            android:label="@string/title_activity_mapa"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".IntroActivity"
             android:label="@string/app_name"
@@ -73,19 +78,23 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity
             android:name=".NewPlace"
-            android:label="@string/title_activity_main_screen" />
+            android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".AnswerBox"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".MyPlacesList"
-            android:label="@string/title_activity_main_screen" />
+            android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".ProfilePreview"
-            android:label="@string/title_activity_main_screen" />
+            android:label="@string/title_activity_main_screen"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".PlacePreview"
             android:label="@string/title_activity_main_screen"

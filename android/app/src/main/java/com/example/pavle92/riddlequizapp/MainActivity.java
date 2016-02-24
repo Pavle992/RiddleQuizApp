@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,6 +43,10 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity
 {
+
+    //LOGIN
+    public static final String PREFS_NAME = "LoginPrefs";
+    //LOGIN
     EditText etxUser,etxPass;
     Button btnLogin,btnSignUp;
     Player player=null;
@@ -102,6 +109,18 @@ public class MainActivity extends Activity
         FacebookSdk.sdkInitialize(getApplicationContext());
         mCallbackManager=CallbackManager.Factory.create();
         setContentView(R.layout.activity_main);
+
+
+/*
+         * Check if we successfully logged in before.
+         * If we did, redirect to home page
+         */
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        if (settings.getString("logged", "").toString().equals("logged")) {
+            Intent intent1 = new Intent(MainActivity.this, MainScreenActivity.class);
+            startActivity(intent1);
+        }
+
         //after view created
         LoginManager.getInstance().logOut();
         //FACEBOOK login part
@@ -245,8 +264,19 @@ public class MainActivity extends Activity
                 if (!player.getIme().equals("")) {
                     MakeToast(player.getIme() + " " + player.getPrezime());
                     pd.cancel();
+
+                    //make SharedPreferences object
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("logged", "logged");
+                    editor.putString("UserName",etxUser.getText().toString());
+                    editor.putString("UserPicture",BitmapToByteArrayConvert(player.getImg()));
+                    editor.commit();
+
+
                     Intent in = new Intent(MainActivity.this, MainScreenActivity.class);
-                    in.putExtra("UserName",etxUser.getText().toString());
+                   // in.putExtra("UserName",etxUser.getText().toString());
+                    //in.putExtra("UserPicture",player.getImg());
                     player=null;
                     startActivity(in);
                     etxUser.setText("");
@@ -275,8 +305,20 @@ public class MainActivity extends Activity
 
                     MakeToast(player.getIme() + " " + player.getPrezime());
                     pd.cancel();
+
+                    //make SharedPreferences object
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("logged", "logged");
+                    editor.putString("UserName",player.getUser());
+                    editor.putString("UserPicture", BitmapToByteArrayConvert(player.getImg()));
+                    editor.commit();
+
+
+
                     Intent in = new Intent(MainActivity.this, MainScreenActivity.class);
-                    in.putExtra("UserName",player.getUser());
+                   // in.putExtra("UserName",player.getUser());
+                    //in.putExtra("UserPicture",player.getImg());
                     player = null;
                     startActivity(in);
                     etxUser.setText("");
@@ -321,8 +363,19 @@ public class MainActivity extends Activity
                                 }
                             });
 
+
+                            //make SharedPreferences object
+                            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("logged", "logged");
+                            editor.putString("UserName",etxUser.getText().toString());
+                            editor.putString("UserPicture",BitmapToByteArrayConvert(player.getImg()));
+                            editor.commit();
+
+
                             Intent in = new Intent(MainActivity.this, MainScreenActivity.class);
-                            in.putExtra("UserName", player.getUser());
+                           // in.putExtra("UserName", player.getUser());
+                            //in.putExtra("UserPicture",player.getImg());
                             player = null;
                             startActivity(in);
 
@@ -437,4 +490,14 @@ public class MainActivity extends Activity
 
         return t;
     }
+
+    private String BitmapToByteArrayConvert(Bitmap bm){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+        String encoded = Base64.encodeToString(b, Base64.DEFAULT);
+        return encoded;
+    }
+
+
 }

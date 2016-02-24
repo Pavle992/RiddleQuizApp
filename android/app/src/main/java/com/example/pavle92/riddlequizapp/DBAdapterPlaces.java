@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Vulovic on 28.3.2015.
+ * Created by Vidanovic on 10.01.2016
  */
 public class DBAdapterPlaces
 {

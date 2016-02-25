@@ -3,12 +3,16 @@ package com.example.pavle92.riddlequizapp;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -26,6 +30,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +52,10 @@ public class MainScreenActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ImageView prfpc;
     private TextView usrnm;
+
+    Location camLoc;
+    ArrayList<Marker> markersPos;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,28 +90,75 @@ public class MainScreenActivity extends AppCompatActivity {
 
                 int id=menuItem.getItemId();
 
+                switch(id) {
+                    case R.id.logout:
+                        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.remove("logged");
+                        editor.commit();
 
-                if (id == R.id.logout)
-                {
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.remove("logged");
-                    editor.commit();
 
+                        Intent in = new Intent(MainScreenActivity.this, MainActivity.class);
+                        startActivity(in);
+                        finish();
+                        break;
+                    case R.id.my_location:
 
-                    Intent in =new Intent(MainScreenActivity.this,MainActivity.class);
-                    startActivity(in);
-                    finish();
+                        LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
+                        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        {
+                            Intent in12=new Intent(MainScreenActivity.this,MapsActivity.class);
+                            in12.putExtra("UserName",userName);
+                            in12.putExtra("Mod",0);
+                            startActivity(in12);
+                        }
+                        else
+                        {
+                            showSettingsAlert();
+                        }
+
+                        break;
+                    case  R.id.high_score:
+                        Intent in11 = new Intent(MainScreenActivity.this, HighScore.class);
+                        in11.putExtra("username",userName);
+                        startActivity(in11);
+                        break;
+                    case R.id.my_friends:
+                        Intent in22 = new Intent(MainScreenActivity.this, Friends.class);
+                        in22.putExtra("UserName", userName);
+                        startActivity(in22);
+                        break;
+                    case R.id.my_places:
+//                        Intent in123 = new Intent(MainScreenActivity.this, MyPlacesList.class);
+//                        in123.putExtra("UserName",userName);
+//                        startActivity(in123);
+
+                        LocationManager lm1=(LocationManager)getSystemService(LOCATION_SERVICE);
+                        if (lm1.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        {
+                            Intent in44 = new Intent(MainScreenActivity.this, MapsActivity.class);
+                            in44.putExtra("Mod", 1);
+                            in44.putExtra("UserName", userName);
+                            //startActivityForResult(in44, 12345);
+                            startActivity(in44);
+                        }
+                        else
+                            Toast.makeText(MainScreenActivity.this,"Enable GPS first!",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.scanNN:
+                        Intent in33 = new Intent(MainScreenActivity.this, ScanActivity.class);
+//            in.putExtra("UserName",userName);
+                        startActivity(in33);
+                    break;
+                    default:
                 }
-
-
                 return true;
             }
         });
         //NAVIGATION VIEW
 
-        ImageView img=(ImageView)findViewById(R.id.imageView2);
-        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
+//        ImageView img=(ImageView)findViewById(R.id.imageView2);
+//        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
 
         userName="";
         profPic=null;
@@ -131,7 +188,12 @@ public class MainScreenActivity extends AppCompatActivity {
         }
 
 
+        //NovaMapa MAPS
+        camLoc = new Location(LocationManager.NETWORK_PROVIDER);
+        markersPos = new ArrayList<Marker>();
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        
 
  //       dbAdapter.OpenDB();
  //       dbAdapter.ClearAll();
@@ -262,12 +324,10 @@ public class MainScreenActivity extends AppCompatActivity {
 
     private  void guiNotifyUser(final String msg)
     {
-        guiThread.post(new Runnable()
-        {
+        guiThread.post(new Runnable() {
             @Override
-            public void run()
-            {
-                Toast.makeText(MainScreenActivity.this,msg,Toast.LENGTH_SHORT).show();
+            public void run() {
+                Toast.makeText(MainScreenActivity.this, msg, Toast.LENGTH_SHORT).show();
                 pd.cancel();
             }
         });
@@ -306,4 +366,11 @@ public class MainScreenActivity extends AppCompatActivity {
         Bitmap retb= BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
         return retb;
     }
+    public boolean isOnline()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

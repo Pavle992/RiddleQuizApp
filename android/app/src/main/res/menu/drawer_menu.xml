@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_attachment"
+            android:id="@+id/high_score"
             android:checked="true"
             android:icon="@drawable/abc_btn_rating_star_on_mtrl_alpha"
             android:title="@string/highscore" />
@@ -12,16 +12,16 @@
             android:icon="@drawable/ic_action_current_location"
             android:title="@string/cur_loc" />
         <item
-            android:id="@+id/navigation_item_images"
+            android:id="@+id/my_places"
             android:icon="@drawable/ic_action_map"
             android:title="@string/myplaces" />
         <item
-            android:id="@+id/navigation_item_location"
+            android:id="@+id/my_friends"
             android:icon="@drawable/ic_action_all_friends_512"
             android:title="@string/myfriends" />
 
         <item
-            android:id="@+id/scannn"
+            android:id="@+id/scanNN"
             android:icon="@drawable/ic_action_2_512"
             android:title="@string/scan" />
     </group>

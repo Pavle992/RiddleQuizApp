@@ -104,7 +104,6 @@
             android:label="Select friends         "
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".GuestActivity" />
-        <activity android:name=".SignUpOptionActivity" />
         <activity android:name=".ScanActivity"></activity>
     </application>
 

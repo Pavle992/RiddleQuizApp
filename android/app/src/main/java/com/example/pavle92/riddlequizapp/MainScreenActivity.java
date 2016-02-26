@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -21,7 +22,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -31,14 +31,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class MainScreenActivity extends AppCompatActivity {
+public class MainScreenActivity extends ActionBarActivity implements OnMapReadyCallback ,
+        GoogleMap.OnMapLongClickListener,GoogleMap.OnInfoWindowClickListener,GoogleMap.OnCameraChangeListener {
 
     public static final String PREFS_NAME = "LoginPrefs";
 
@@ -52,13 +64,96 @@ public class MainScreenActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ImageView prfpc;
     private TextView usrnm;
-
+    //MAP
+    private GoogleMap map;
+    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener;
+    private Marker mMarker;
+    private Circle circle;
+    private ArrayList<Place> places;
+    private ArrayList<Marker> markers;
+    private ArrayList<Marker> markersPos;
+    private int mod=3;
+    private Location curLoc;
+    private double lat=0.0;
+    private double lon=0.0;
+    private  Location camLoc;
+    private boolean first;
+    private float currentZoom=15;
+    boolean cam=false;
+    private String name="";
+    private boolean m3=false;
+    private DBAdapterPlaces db;
+    private Marker me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+        //Shared pref
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        userName=settings.getString("UserName", "");
+        profPic=Ba64StringToBitmap(settings.getString("UserPicture", ""));
+
+        db=new DBAdapterPlaces(this,userName);
+        markersPos=new ArrayList<Marker>();
+        markers=new ArrayList<Marker>();
+
+        //MAP
+        setUpMapIfNeeded();
+        myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+
+                if (mMarker != null) {
+                    mMarker.remove();
+                    circle.remove();
+                }
+                curLoc=location;
+                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+                mMarker=map.addMarker(new MarkerOptions().position(loc).title("Your Location"));
+                circle = map.addCircle(new CircleOptions().center(loc).strokeColor(Color.BLACK).strokeWidth(3).radius(700));
+                if(map != null){
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15.0f));
+                }
+                boolean up=false;
+
+
+                db.OpenDB();
+
+                for (Place p : places)
+                {
+                    float[] distance = new float[2];
+
+                    Location.distanceBetween(Double.parseDouble(p.getLatitude()),Double.parseDouble(p.getLongitude()), circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+                    if (distance[0] < circle.getRadius()) {
+                        p.setVisible(true);
+                        db.UpdatePlaceVisible(String.valueOf(p.getLatitude()),String.valueOf(p.getLongitude()));
+                        up=true;
+                    }
+
+
+                }
+                db.CloseDB();
+
+                if (up && m3) {
+                    getPlaces(mod);
+
+                    setUpMap(name);
+                }
+            }
+
+        };
+        map.setOnMyLocationChangeListener(myLocationChangeListener);
+
+        CheckMod();
+
+        map.setOnCameraChangeListener(this);
+        map.setOnInfoWindowClickListener(this);
+        //      getLocation();
+        //      getUsersLocations(mod);
+        Log.e("Mod", String.valueOf(mod));
 
         //MENU MENI
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,16 +226,27 @@ public class MainScreenActivity extends AppCompatActivity {
 //                        startActivity(in123);
 
                         LocationManager lm1=(LocationManager)getSystemService(LOCATION_SERVICE);
-                        if (lm1.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        if(m3)
+                        {//if already clicked
+                            for (Marker m:markers)
+                                m.remove();
+
+                            m3=false;
+                        }
+                        else  if (lm1.isProviderEnabled(LocationManager.GPS_PROVIDER))
                         {
-                            Intent in44 = new Intent(MainScreenActivity.this, MapsActivity.class);
-                            in44.putExtra("Mod", 1);
-                            in44.putExtra("UserName", userName);
-                            //startActivityForResult(in44, 12345);
-                            startActivity(in44);
+                            //CHANGE MAPS
+                            mod=2;
+                            setUpMap("");
+
+                            m3=true;
+
+
                         }
                         else
-                            Toast.makeText(MainScreenActivity.this,"Enable GPS first!",Toast.LENGTH_SHORT).show();
+                        {
+                            showSettingsAlert();
+                        }
                         break;
                     case R.id.scanNN:
                         Intent in33 = new Intent(MainScreenActivity.this, ScanActivity.class);
@@ -154,19 +260,19 @@ public class MainScreenActivity extends AppCompatActivity {
         });
         //NAVIGATION VIEW
 
-        ImageView img=(ImageView)findViewById(R.id.imageView2);
-        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
+//        ImageView img=(ImageView)findViewById(R.id.imageView2);
+//        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
 
-        userName="";
-        profPic=null;
+//        userName="";
+//        profPic=null;
         guiThread=new Handler();
         pd=new ProgressDialog(MainScreenActivity.this);
 
         //Bundle bnd=getIntent().getExtras();
-        //Shared pref
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        userName=settings.getString("UserName","");
-        profPic=Ba64StringToBitmap(settings.getString("UserPicture",""));
+//        //Shared pref
+//        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+//        userName=settings.getString("UserName","");
+//        profPic=Ba64StringToBitmap(settings.getString("UserPicture",""));
 //        if(bnd!=null) {
 //            userName = bnd.getString("UserName");
 //            profPic=(Bitmap)bnd.getParcelable("UserPicture");
@@ -222,12 +328,27 @@ public class MainScreenActivity extends AppCompatActivity {
         if(id==R.id.show_map)
         {
             LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
-            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+
+            if(m3)
+            {//if already clicked
+                for (Marker m:markers)
+                    m.remove();
+
+                m3=false;
+            }
+            else  if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
             {
-                Intent in=new Intent(this,MapsActivity.class);
-                in.putExtra("UserName",userName);
-                in.putExtra("Mod",0);
-                startActivity(in);
+//                Intent in=new Intent(this,MapsActivity.class);
+//                in.putExtra("UserName",userName);
+//                in.putExtra("Mod",0);
+//                startActivity(in);
+                //CHANGE MAPS
+                mod=2;
+                setUpMap("");
+
+                m3=true;
+
+
             }
             else
             {
@@ -365,4 +486,346 @@ public class MainScreenActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+//        map.addMarker(new MarkerOptions()
+//                .position(new LatLng(0, 0))
+//                .title("Marker"));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
+    }
+
+    private void setUpMapIfNeeded()
+    {
+        //for(Marker m:markers)
+        //    m.remove();
+       // getPlaces(mod);
+        // Do a null check to confirm that we have not already instantiated the map.
+        getPlaces(mod);
+        if (map == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            map.setMyLocationEnabled(true);
+            // Check if we were successful in obtaining the map.
+            if (map != null) {
+
+                setUpCamera();
+                setUpMap(name);
+                //setUpMap();
+
+            }
+        }
+    }
+
+    private void setUpMap(){
+        map.addMarker(new MarkerOptions().position(new LatLng(0,0)).title("Marker"));
+        map.setMyLocationEnabled(true);
+    }
+    public  void getPlaces(int mod)
+    {
+        DBAdapterPlaces dbp=new DBAdapterPlaces(this,userName);
+        Log.d("UserZaBAzu",userName);
+        dbp.OpenDB();
+        places=dbp.getPlaceses();
+        dbp.CloseDB();
+
+        if(mod==1)
+        {
+            for (Iterator<Place> it = places.iterator(); it.hasNext(); ) {
+                Place p = it.next();
+
+                if (!p.getUserName().equals(userName)) {
+                    it.remove();
+                }
+            }
+        }
+        else if(mod==0)
+        {
+            for (Iterator<Place> it = places.iterator(); it.hasNext(); )
+            {
+                Place p = it.next();
+
+                if (p.getUserName().equals(userName))
+                {
+                    it.remove();
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        if(marker.getSnippet().contains("by"))
+        {
+            if(!isOnline())
+                Toast.makeText(this,"Enable internet connection before answering!",Toast.LENGTH_SHORT).show();
+            else
+            {
+                String[] niz=marker.getSnippet().split(" ");
+                Intent in=new Intent(this,AnswerBox.class);
+
+                Toast.makeText(this,marker.getTitle(),Toast.LENGTH_SHORT).show();
+
+                in.putExtra("lat", marker.getPosition().latitude);
+                in.putExtra("log", marker.getPosition().longitude);
+                in.putExtra("userName",userName);
+                in.putExtra("userNameQ",niz[1]);
+                Log.e("QQQQ",niz[1]);
+                startActivityForResult(in, 9890);
+            }
+
+        }
+
+
+
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+
+    }
+
+    public void CheckMod()
+    {
+
+            if(curLoc!=null) {
+                lat = curLoc.getLatitude();
+                lon = curLoc.getLongitude();
+            }
+            if(lat!=0 && lon!=0 )
+            {
+                first=true;
+                cam=true;
+                currentZoom=18;
+                camLoc = new Location(LocationManager.NETWORK_PROVIDER);
+                camLoc.setLatitude(lat);
+                camLoc.setLongitude(lon);
+                setUpCamera();
+            }
+            if(mod==1)
+                map.setOnMapLongClickListener(this);
+
+        }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+
+    }
+
+    public void setUpCamera()
+    {
+        if(camLoc!=null)
+        {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(camLoc.getLatitude(), camLoc.getLongitude()), currentZoom));
+
+        }
+        else
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), currentZoom));
+    }
+    private void setUpMap(String ime)
+    {
+
+
+        for (Marker m:markers)
+            m.remove();
+
+        markers=new ArrayList<Marker>();
+
+        if(places!=null)
+        {
+            if (mod==1)
+            {
+                for(Place p:places)
+                {
+
+                    Marker m;
+                    m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("Mesto: " + p.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myquestion)));
+                    m.setVisible(true);
+                    markers.add(m);
+
+                }
+            }
+            else  if (mod == 0 && !ime.equals(""))
+            {
+                String[] imena = ime.split(" ");
+                for (Place p : places)
+                {
+                    Log.e("Mesto",p.getName());
+
+                    for (String in : imena)
+                    {
+                        Log.e("OPALALALA", in);
+                        Marker m;
+                        if (p.getUserName().equals(in))
+                        {
+                            if (p.isSolved())
+                            {
+                                m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("Hint: " + p.getHint()).icon(BitmapDescriptorFactory.fromResource(R.drawable.correct)));
+                            } else
+                            {
+
+                                m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("by: " + p.getUserName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.image)));
+                            }
+                            m.setVisible(p.isVisible());
+                            markers.add(m);
+                        }
+
+                    }
+                }
+
+            }
+            else if (mod ==2)
+            {
+
+
+                for (Place p : places)
+                {
+                    //     Log.e("Mesto",p.getName());
+
+
+                    Marker m;
+
+                    if (p.isSolved())
+                    {
+                        m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("Hint: " + p.getHint()).icon(BitmapDescriptorFactory.fromResource(R.drawable.correct)));
+                    } else
+                    {
+
+                        m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("by: " + p.getUserName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.image)));
+                    }
+                    if(insideCircle(p,circle) || p.isSolved())
+                       // m.setVisible(p.isVisible());
+                        m.setVisible(true);
+                    else
+                        m.setVisible(false);
+                    markers.add(m);
+                }
+
+            }
+        }
+    }
+
+    private boolean insideCircle(Place place, Circle circle){
+        float[] distance = new float[2];
+        boolean inRadius=false;
+        Location.distanceBetween(Double.parseDouble(place.getLatitude()),Double.parseDouble(place.getLongitude()), circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+        Log.d("Razlika", String.valueOf(distance[0]));
+        Log.d("Radius", String.valueOf(circle.getRadius()));
+        if (distance[0] < circle.getRadius()) {
+            inRadius=true;
+            Log.d("Proso", String.valueOf(circle.getRadius()));
+        }
+        return inRadius;
+    }
+    private  void TrackMe()
+    {
+
+        if (me != null && circle != null)
+        {
+            me.remove();
+            circle.remove();
+        }
+        me = map.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title("You are here!"));
+        circle = map.addCircle(new CircleOptions().center(new LatLng(lat, lon)).strokeColor(Color.BLACK).strokeWidth(3).radius(2500));
+
+        boolean up=false;
+
+        DBAdapterPlaces db=new DBAdapterPlaces(this,userName);
+        db.OpenDB();
+
+        for (Place p : places)
+        {
+            float[] distance = new float[2];
+
+            Location.distanceBetween(Double.parseDouble(p.getLatitude()),Double.parseDouble(p.getLongitude()), circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+            if (distance[0] < circle.getRadius()) {
+                p.setVisible(true);
+                db.UpdatePlaceVisible(String.valueOf(p.getLatitude()),String.valueOf(p.getLongitude()));
+                up=true;
+            }
+
+
+        }
+        db.CloseDB();
+
+        if (up)
+            getPlaces(mod);
+
+        setUpMap(name);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==9000 && resultCode== Activity.RESULT_OK)
+            MakeToast("Place added!");
+        else
+        if(requestCode==9890) {
+            if (resultCode == Activity.RESULT_OK) {
+                String lat = "";
+                String log = "";
+                Bundle b = data.getExtras();
+                if (b != null) {
+                    lat = b.getString("lat");
+                    log = b.getString("log");
+                }
+                for (Marker m : markers)
+                    if ((m.getPosition().latitude == Double.parseDouble(lat)) && (m.getPosition().longitude == Double.parseDouble(log))) {
+                        DBAdapterPlaces dbAdapterPlaces = new DBAdapterPlaces(this, userName);
+                        dbAdapterPlaces.OpenDB();
+                        dbAdapterPlaces.UpdatePlaceSolved(lat, log);
+
+                        dbAdapterPlaces.CloseDB();
+                        updateScore(userName);
+                        MakeToast("Place Solved, you earn 10 points");
+                        m.remove();
+                    }
+
+            }
+
+
+        }
+        else if(requestCode==1234)
+        {
+            if (resultCode==RESULT_OK)
+            {
+                name = data.getStringExtra("retStr");
+
+            }
+        }
+
+        getPlaces(mod);
+        setUpMap(name);
+        TrackMe();
+    }
+
+    public void MakeToast(String s)
+    {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+    private void updateScore(final String userName) {
+        ExecutorService transThread = Executors.newSingleThreadExecutor();
+        transThread.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    String ret = MyPlacesHTTPHelper.UpdateScore(userName, 1);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
 }

@@ -53,9 +53,6 @@ public class MainScreenActivity extends AppCompatActivity {
     private ImageView prfpc;
     private TextView usrnm;
 
-    Location camLoc;
-    ArrayList<Marker> markersPos;
-    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,8 +154,8 @@ public class MainScreenActivity extends AppCompatActivity {
         });
         //NAVIGATION VIEW
 
-//        ImageView img=(ImageView)findViewById(R.id.imageView2);
-//        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
+        ImageView img=(ImageView)findViewById(R.id.imageView2);
+        img.setImageResource(R.drawable.ic_ic_question_mark_hd_wallpaper1);
 
         userName="";
         profPic=null;
@@ -188,11 +185,6 @@ public class MainScreenActivity extends AppCompatActivity {
         }
 
 
-        //NovaMapa MAPS
-        camLoc = new Location(LocationManager.NETWORK_PROVIDER);
-        markersPos = new ArrayList<Marker>();
-
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         
 
  //       dbAdapter.OpenDB();

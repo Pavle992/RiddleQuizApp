@@ -59,7 +59,7 @@
 
         <activity
             android:name=".HighScore"
-            android:label="@string/title_activity_mapa"
+            android:label="@string/highscore"
             android:theme="@style/AppTheme"/>
         <activity
             android:name=".IntroActivity"

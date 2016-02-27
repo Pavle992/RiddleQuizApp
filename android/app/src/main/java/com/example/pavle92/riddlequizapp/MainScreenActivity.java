@@ -82,6 +82,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
     boolean cam=false;
     private String name="";
     private boolean m3=false;
+    private boolean m2=false;
     private DBAdapterPlaces db;
     private Marker me;
 
@@ -113,9 +114,9 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                 mMarker=map.addMarker(new MarkerOptions().position(loc).title("Your Location"));
                 circle = map.addCircle(new CircleOptions().center(loc).strokeColor(Color.BLACK).strokeWidth(3).radius(700));
-                if(map != null){
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15.0f));
-                }
+//                if(map != null){
+//                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15.0f));
+//                }
                 boolean up=false;
 
 
@@ -137,7 +138,13 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 }
                 db.CloseDB();
 
-                if (up && m3) {
+                if (up && m3){
+                    getPlaces(mod);
+
+                    setUpMap(name);
+                }
+                else if(m2)
+                {
                     getPlaces(mod);
 
                     setUpMap(name);
@@ -194,15 +201,27 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                         startActivity(in);
                         finish();
                         break;
-                    case R.id.my_location:
+                    case R.id.my_places:
 
                         LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
-                        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        if(m2){
+                            for (Marker m:markers)
+                                m.remove();
+
+                            m2=false;
+                        }
+                        else if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
                         {
-                            Intent in12=new Intent(MainScreenActivity.this,MapsActivity.class);
-                            in12.putExtra("UserName",userName);
-                            in12.putExtra("Mod",0);
-                            startActivity(in12);
+//                            Intent in12=new Intent(MainScreenActivity.this,MapsActivity.class);
+//                            in12.putExtra("UserName",userName);
+//                            in12.putExtra("Mod",0);
+//                            startActivity(in12);
+                            //CHANGE MAPS
+                            mod=1;
+                            setUpMap("");
+
+                            m2=true;
+                            m3=false;
                         }
                         else
                         {
@@ -220,7 +239,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                         in22.putExtra("UserName", userName);
                         startActivity(in22);
                         break;
-                    case R.id.my_places:
+                    case R.id.my_location:
 //                        Intent in123 = new Intent(MainScreenActivity.this, MyPlacesList.class);
 //                        in123.putExtra("UserName",userName);
 //                        startActivity(in123);
@@ -240,7 +259,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                             setUpMap("");
 
                             m3=true;
-
+                            m2=false;
 
                         }
                         else
@@ -347,7 +366,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 setUpMap("");
 
                 m3=true;
-
+                m2=false;
 
             }
             else
@@ -644,7 +663,8 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             {
                 for(Place p:places)
                 {
-
+                    if(!p.getUserName().equals(userName))
+                        continue;
                     Marker m;
                     m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getName()).snippet("Mesto: " + p.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myquestion)));
                     m.setVisible(true);

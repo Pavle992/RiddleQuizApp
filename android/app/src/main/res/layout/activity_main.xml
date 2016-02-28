@@ -2,8 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="16px"
-    tools:context=".MainActivity">
+    android:textAlignment="center"
+    android:background="@drawable/city1"
+    tools:context=".MainActivity"
+    android:layout_gravity="center">
 
 
     <LinearLayout

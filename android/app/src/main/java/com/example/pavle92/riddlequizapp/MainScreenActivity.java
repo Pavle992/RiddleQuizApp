@@ -206,7 +206,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 //                    e.printStackTrace();
 //                }
                 radious_circle=(double)progress;
-                setUpMap(name);
+                //setUpMap(name);
             }
 
             @Override

@@ -26,6 +26,8 @@ public class AnswerBox extends Activity {
     String ridle="";
     private String userName="";
     private String userNameQ="";
+    private String riddleQuestAnsw="";
+    private boolean conr=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,21 +43,37 @@ public class AnswerBox extends Activity {
             log=bundle.getDouble("log");
             userName=bundle.getString("userName");
             userNameQ=bundle.getString("userNameQ");
-            DBAdapterPlaces dbp=new DBAdapterPlaces(this,userName);
-            dbp.OpenDB();
-            places=dbp.getPlaceses();
-            dbp.CloseDB();
-        }
-        for (Place p:places)
-        {
-            if((lat==Double.parseDouble(p.getLatitude())) && (log==Double.parseDouble(p.getLongitude())))
-            {
-                lat1=p.getLatitude();
-                log1=p.getLongitude();
-                resenje=p.getSolution();
-                hint=p.getHint();
-                ridle=p.getRidle();
+            riddleQuestAnsw=bundle.getString("riddleQuestionAnsw");
+            if(riddleQuestAnsw!=null){
+                conr=false;
             }
+            //adedd for scan
+            if(conr) {
+                DBAdapterPlaces dbp = new DBAdapterPlaces(this, userName);
+                dbp.OpenDB();
+                places = dbp.getPlaceses();
+                dbp.CloseDB();
+            }
+        }
+        //checking if it is scaned
+        if(conr) {
+            for (Place p : places) {
+                if ((lat == Double.parseDouble(p.getLatitude())) && (log == Double.parseDouble(p.getLongitude()))) {
+                    lat1 = p.getLatitude();
+                    log1 = p.getLongitude();
+                    resenje = p.getSolution();
+                    hint = p.getHint();
+                    ridle = p.getRidle();
+                }
+            }
+        }
+        else{
+            String [] qest_sol=riddleQuestAnsw.split("&");
+            lat1 = String.valueOf(lat);
+            log1 = String.valueOf(log);
+            resenje = qest_sol[2];
+            hint = qest_sol[1];
+            ridle = qest_sol[0];
         }
         final EditText etx=(EditText)findViewById(R.id.etxABAnswer);
         final TextView txtRidle=(TextView)findViewById(R.id.txtRidle);
@@ -79,8 +97,10 @@ public class AnswerBox extends Activity {
                 }
                 else
                 {
-                    MakeToast("Sorry, "+userNameQ+ " gets 5 points!");
-                    updateScore(userNameQ);
+                    if(userNameQ!="RiddleQuizTeam") {
+                        MakeToast("Sorry, " + userNameQ + " gets 5 points!");
+                        updateScore(userNameQ);
+                    }
                 }
             }
         });
@@ -116,6 +136,7 @@ public class AnswerBox extends Activity {
             }
         });
     }
+
 
 
 }

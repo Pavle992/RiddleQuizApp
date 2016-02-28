@@ -25,7 +25,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-       <!-- android:theme="@style/Theme.AppCompat.Light"-->
+
+        <!-- android:theme="@style/Theme.AppCompat.Light" -->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -60,7 +61,7 @@
         <activity
             android:name=".HighScore"
             android:label="@string/highscore"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".IntroActivity"
             android:label="@string/app_name"
@@ -79,22 +80,22 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".NewPlace"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/Theme.AppCompat.Light"/>
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".AnswerBox"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".MyPlacesList"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ProfilePreview"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".PlacePreview"
             android:label="@string/title_activity_main_screen"
@@ -104,7 +105,8 @@
             android:label="Select friends         "
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".GuestActivity" />
-        <activity android:name=".ScanActivity"></activity>
+        <activity android:name=".ScanActivity" />
+        <activity android:name=".About"></activity>
     </application>
 
 </manifest>

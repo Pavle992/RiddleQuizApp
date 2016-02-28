@@ -114,9 +114,9 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                 mMarker=map.addMarker(new MarkerOptions().position(loc).title("Your Location"));
                 circle = map.addCircle(new CircleOptions().center(loc).strokeColor(Color.BLACK).strokeWidth(3).radius(700));
-//                if(map != null){
-//                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15.0f));
-//                }
+                if(map != null){
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
+                }
                 boolean up=false;
 
 
@@ -222,6 +222,8 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                             m2=true;
                             m3=false;
+
+                            CheckMod();
                         }
                         else
                         {
@@ -270,8 +272,16 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                     case R.id.scanNN:
                         Intent in33 = new Intent(MainScreenActivity.this, ScanActivity.class);
 //            in.putExtra("UserName",userName);
-                        startActivity(in33);
+                       // startActivity(in33);
+                        in33.putExtra("lat", curLoc.getLatitude());
+                        in33.putExtra("log", curLoc.getLongitude());
+
+                        startActivityForResult(in33,9890);
                     break;
+                    case R.id.about_app:
+                        Intent in44=new Intent(MainScreenActivity.this,About.class);
+                        startActivity(in44);
+                        break;
                     default:
                 }
                 return true;
@@ -420,6 +430,12 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                 }
             });
+            getMyPlacesRefresh();
+
+            //MAYBE
+            getPlaces(mod);
+            setUpMap(name);
+           // TrackMe();
         }
         else if(id==R.id.myfriends)
         {
@@ -626,7 +642,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 camLoc = new Location(LocationManager.NETWORK_PROVIDER);
                 camLoc.setLatitude(lat);
                 camLoc.setLongitude(lon);
-                setUpCamera();
+                //setUpCamera();
             }
             if(mod==1)
                 map.setOnMapLongClickListener(this);
@@ -635,6 +651,16 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+
+        if(latLng!=null)
+        {
+            Intent in=new Intent(MainScreenActivity.this,NewPlace.class);
+            in.putExtra("br",0);
+            in.putExtra("latitude",latLng.latitude);
+            in.putExtra("longitude",latLng.longitude);
+            in.putExtra("userName",userName);
+            startActivityForResult(in, 9000);
+        }
 
     }
 
@@ -678,6 +704,8 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 for (Place p : places)
                 {
                     Log.e("Mesto",p.getName());
+                    if(p.getUserName().equals(userName))
+                        continue;
 
                     for (String in : imena)
                     {
@@ -709,6 +737,8 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 {
                     //     Log.e("Mesto",p.getName());
 
+                    if(p.getUserName().equals(userName))
+                        continue;
 
                     Marker m;
 
@@ -793,12 +823,19 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             if (resultCode == Activity.RESULT_OK) {
                 String lat = "";
                 String log = "";
+                String rd="";
+                String ht="";
+                String sl="";
                 Bundle b = data.getExtras();
                 if (b != null) {
                     lat = b.getString("lat");
                     log = b.getString("log");
+                    rd=b.getString("ridle");
+                    ht=b.getString("hint");
+                    sl=b.getString("solution");
                 }
-                for (Marker m : markers)
+                boolean qft=true;//question from team
+                for (Marker m : markers) {
                     if ((m.getPosition().latitude == Double.parseDouble(lat)) && (m.getPosition().longitude == Double.parseDouble(log))) {
                         DBAdapterPlaces dbAdapterPlaces = new DBAdapterPlaces(this, userName);
                         dbAdapterPlaces.OpenDB();
@@ -808,7 +845,20 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                         updateScore(userName);
                         MakeToast("Place Solved, you earn 10 points");
                         m.remove();
+                        qft = false;
                     }
+                }
+                if(qft){
+                    //question from team QrScaned
+                    DBAdapterPlaces dbAdapterPlaces = new DBAdapterPlaces(this, userName);
+                    dbAdapterPlaces.OpenDB();
+                    dbAdapterPlaces.SavePlace(new Place(lat,log,name,rd,sl,ht));
+                    dbAdapterPlaces.UpdatePlaceSolved(lat, log);
+
+                    dbAdapterPlaces.CloseDB();
+                    updateScore(userName);
+
+                }
 
             }
 
@@ -845,6 +895,59 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                     e.printStackTrace();
                 }
 
+            }
+        });
+    }
+    private void getMyPlacesRefresh()
+    {
+        ExecutorService transThread = Executors.newSingleThreadExecutor();
+        transThread.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    guiProgressStart("Refreshing places");
+                    ArrayList<Place> placesServer = MyPlacesHTTPHelper.getMyPlaces(userName);
+                    Log.e("User", userName);
+                    db.OpenDB();
+                    ArrayList<Place> myPlaces = db.getMyPlaceses(userName);
+                    for (Place place : placesServer) {
+                        Log.e("MestoServer  ", place.getName() + " " + place.getLatitude() + " " + place.getLongitude());
+                        int ima = 0;
+                        for (Place p : myPlaces) {
+                            Log.e("MestoBaza  ", p.getName() + " " + p.getLatitude().substring(0, 7) + " " + p.getLongitude().substring(0, 7));
+                            if (place.getLongitude().substring(0, 7).equals(p.getLongitude().substring(0, 7)) && place.getLatitude().substring(0, 7).equals(p.getLatitude().substring(0, 7)))
+                                ima = 1;
+                        }
+                        if (ima == 0) {
+                            Log.e("Dodato u bazu  ", place.getName());
+                            db.SavePlace(place);
+                        } else
+                            Log.e("NIJE!Dodato u bazu  ", place.getName());
+                    }
+
+
+                    db.CloseDB();
+                    guiProgressFinish(1);
+                    //     guiNotifyUser("Mesta su osvezena!");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+    private  void guiProgressFinish(final int a)
+    {
+        guiThread.post(new Runnable() {
+            @Override
+            public void run() {
+                pd.cancel();
+                if (a == 1)
+                    MakeToast("Downloaded");
+                else
+                    MakeToast("Uploaded");
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.pavle92.riddlequizapp;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class NewPlace extends ActionBarActivity implements View.OnClickListener {
@@ -25,6 +28,7 @@ public class NewPlace extends ActionBarActivity implements View.OnClickListener 
     String lat1 = "", lng1 = "";
     private String userName;
     private Handler guiThread;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class NewPlace extends ActionBarActivity implements View.OnClickListener 
         userName = "";
 
         guiThread = new Handler();
+        pd=new ProgressDialog(NewPlace.this);
 
         btnOk = (Button) findViewById(R.id.btnNewPlaceOk);
         btnOk.setOnClickListener(this);
@@ -104,6 +109,33 @@ public class NewPlace extends ActionBarActivity implements View.OnClickListener 
                 dbP.SavePlace(place);
                 dbP.CloseDB();
 
+                //Uploading a place
+                guiProgressStart("Uploading place");
+                //Provera da li je vec uploadovano, jos jedna boolean promenljiva kod mesta.
+                ExecutorService transThread = Executors.newSingleThreadExecutor();
+                transThread.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String dodato = MyPlacesHTTPHelper.SendMyPlace(place, userName);
+                            //  places.get(info.position).setUpload(true);
+                            DBAdapterPlaces dbp = new DBAdapterPlaces(NewPlace.this, userName);
+                            dbp.OpenDB();
+                            dbp.UpdatePlaceUploaded(place.getLatitude(), place.getLongitude());
+//                            places = dbp.getMyPlaceses(userName);
+                            dbp.CloseDB();
+                            Log.e("OOO", dodato);
+                            guiProgressFinish(2);
+                            // getPlaces();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+
                 setResult(Activity.RESULT_OK);
                 finish();
 
@@ -112,7 +144,7 @@ public class NewPlace extends ActionBarActivity implements View.OnClickListener 
             {
                 dbP.OpenDB();
                 dbP.UpdatePlace(lat1, lng1, etName.getText().toString(), etRidle.getText().toString(), etSolution.getText().toString(), etHint.getText().toString());
-                Log.e("DDD",lat1+" "+lng1);
+                Log.e("DDD", lat1 + " " + lng1);
                 Toast.makeText(this, "Place updated", Toast.LENGTH_SHORT).show();
                 dbP.CloseDB();
                 setResult(Activity.RESULT_OK);
@@ -125,6 +157,36 @@ public class NewPlace extends ActionBarActivity implements View.OnClickListener 
             finish();
         }
 
+    }
+    private  void guiProgressStart(final String msg)
+    {
+        guiThread.post(new Runnable() {
+            @Override
+            public void run() {
+
+                pd.setMessage(msg);
+                pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pd.show();
+
+            }
+        });
+    }
+    private  void guiProgressFinish(final int a)
+    {
+        guiThread.post(new Runnable() {
+            @Override
+            public void run() {
+                pd.cancel();
+                if (a == 1)
+                    MakeToast("Downloaded");
+                else
+                    MakeToast("Uploaded");
+            }
+        });
+    }
+    public void MakeToast(String s)
+    {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
 }

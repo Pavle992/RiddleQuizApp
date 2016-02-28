@@ -29,7 +29,7 @@
     <item android:title="@string/nav_sub_menu">
         <menu>
             <item
-                android:id="@+id/about_user"
+                android:id="@+id/about_app"
                 android:icon="@drawable/ic_action_about"
                 android:title="@string/about" />
             <item

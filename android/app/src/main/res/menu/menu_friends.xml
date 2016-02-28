@@ -4,7 +4,7 @@
     tools:context="com.example.pavle92.riddlequizapp.Friends">
 
     <item android:id="@+id/item_friends" android:title="Friends"
-    android:orderInCategory="100" app:showAsAction="ifRoom" />
+    android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/item_friends_search" android:title="Search"
         android:orderInCategory="100" app:showAsAction="ifRoom" />
     <item android:id="@+id/item_enable_bt" android:title="Enable Bluetooth"

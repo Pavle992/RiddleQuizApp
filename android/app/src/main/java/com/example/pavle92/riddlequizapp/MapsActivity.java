@@ -114,7 +114,6 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnCamer
             in.putExtra("imena",userNamess);
             startActivityForResult(in, 1234);
             userNamess="";
-
         }
         return super.onOptionsItemSelected(item);
     }

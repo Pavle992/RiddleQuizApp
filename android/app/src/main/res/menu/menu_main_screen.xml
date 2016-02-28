@@ -2,18 +2,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.pavle92.riddlequizapp.MainScreenActivity">
+    <item android:id="@+id/search1" android:title="@string/myfiends"
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action_all_friends_512"/>
     <item android:id="@+id/show_map" android:title="@string/show_map"
-        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/ic_action_map"/>
+        android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action_map"/>
     <item android:id="@+id/refresh" android:title="Get places from server"
-        android:orderInCategory="100"  android:icon="@drawable/ic_action_refresh" app:showAsAction="always"/>
+        android:orderInCategory="100"  android:icon="@drawable/ic_action_refresh" app:showAsAction="ifRoom"/>
     <item android:id="@+id/highscore" android:title="@string/highscore"
         android:orderInCategory="100" app:showAsAction="ifRoom" android:icon="@drawable/ic_action_view_as_list"/>
     <item android:id="@+id/myplaces" android:title="@string/myplaces"
         android:orderInCategory="100" app:showAsAction="never"/>
     <item android:id="@+id/myfriends" android:title="@string/myfriends"
         android:orderInCategory="100" app:showAsAction="never"/>
-    <item android:id="@+id/about" android:title="@string/about"
+    <item android:id="@+id/radious" android:title="@string/radious"
         android:orderInCategory="100" app:showAsAction="never"/>
     <item android:id="@+id/scan" android:title="@string/scan"
     android:orderInCategory="100" app:showAsAction="never"/>
+
 </menu>

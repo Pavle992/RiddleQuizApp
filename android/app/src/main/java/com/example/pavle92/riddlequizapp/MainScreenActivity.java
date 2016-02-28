@@ -27,7 +27,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +46,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -53,6 +59,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
         GoogleMap.OnMapLongClickListener,GoogleMap.OnInfoWindowClickListener,GoogleMap.OnCameraChangeListener {
 
     public static final String PREFS_NAME = "LoginPrefs";
+    public static final int MAX_SEEK_BAR_VALUE=3000;
 
     private String userName;
     private Handler guiThread;
@@ -85,6 +92,11 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
     private boolean m2=false;
     private DBAdapterPlaces db;
     private Marker me;
+    private String userNamess;
+    private Timer timer;
+    private boolean m1;
+    private SeekBar seekBar;
+    private Double radious_circle=700.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +125,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 curLoc=location;
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                 mMarker=map.addMarker(new MarkerOptions().position(loc).title("Your Location"));
-                circle = map.addCircle(new CircleOptions().center(loc).strokeColor(Color.BLACK).strokeWidth(3).radius(700));
+                circle = map.addCircle(new CircleOptions().center(loc).strokeColor(Color.BLACK).strokeWidth(3).radius(radious_circle));
                 if(map != null){
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
                 }
@@ -143,11 +155,15 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                     setUpMap(name);
                 }
-                else if(m2)
+                else if(up & m2)
                 {
                     getPlaces(mod);
 
                     setUpMap(name);
+                }
+                else if(up & m1){
+                    getUsersLocations(mod);
+                    Log.d("FriendsModGoogle", "" + mod);
                 }
             }
 
@@ -167,6 +183,43 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
         prfpc= (ImageView) findViewById(R.id.userPctr);
         usrnm= (TextView) findViewById(R.id.userNm);
+
+        //SEEKBAR
+        seekBar= (SeekBar) findViewById(R.id.radiusBar);
+        seekBar.setMax(MAX_SEEK_BAR_VALUE);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar inUse, int progress, boolean b) {
+                final int prog=progress;
+//             Thread t1 = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        radious_circle=(double)prog;
+//                        setUpMap(name);
+//                    }
+//                });
+//                t1.start();
+//
+//                try {
+//                    t1.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                radious_circle=(double)progress;
+                setUpMap(name);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                MakeToast("You are changing radius.");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.setVisibility(View.GONE);
+            }
+        });
+
         //TOOLBAR
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -222,7 +275,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                             m2=true;
                             m3=false;
-
+                            m1=false;
                             CheckMod();
                         }
                         else
@@ -262,7 +315,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                             m3=true;
                             m2=false;
-
+                            m1=false;
                         }
                         else
                         {
@@ -358,6 +411,14 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
         {
             LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
 
+            if(m1)
+            {//if already clicked
+                for (Marker m : markersPos)
+                    m.remove();
+
+                m1=false;
+            }
+
             if(m3)
             {//if already clicked
                 for (Marker m:markers)
@@ -377,7 +438,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                 m3=true;
                 m2=false;
-
+                m1=false;
             }
             else
             {
@@ -455,6 +516,33 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 //            in.putExtra("UserName",userName);
             startActivity(in);
         }
+        else if(id==R.id.search1)
+        {
+
+            if(m1)
+            {//if already clicked
+                for (Marker m : markersPos)
+                    m.remove();
+
+                m1=false;
+                mod=3;
+            }
+            else {
+                mod = 0;
+                getUsersLocations(mod);
+                m3=false;
+                m2=false;
+                m1=true;
+            }
+        }
+        else if (id == R.id.radious){
+
+            seekBar.setProgress(radious_circle.intValue());
+            seekBar.setVisibility(View.VISIBLE);
+
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
     private  void guiProgressStart(final String msg)
@@ -784,7 +872,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             circle.remove();
         }
         me = map.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title("You are here!"));
-        circle = map.addCircle(new CircleOptions().center(new LatLng(lat, lon)).strokeColor(Color.BLACK).strokeWidth(3).radius(2500));
+        circle = map.addCircle(new CircleOptions().center(new LatLng(lat, lon)).strokeColor(Color.BLACK).strokeWidth(3).radius(radious_circle));
 
         boolean up=false;
 
@@ -950,5 +1038,67 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                     MakeToast("Uploaded");
             }
         });
+    }
+    private void guiNotifyUser(final ArrayList<Player> players) {
+        guiThread.post(new Runnable() {
+            @Override
+            public void run() {
+
+                for (Marker m : markersPos)
+                    m.remove();
+                for (Player p : players) {
+
+                    Marker m = map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()))).title(p.getUser()).snippet("UserName: " + p.getUser()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person)));
+                    markersPos.add(m);
+                    Log.e("Timer1", "Timer1"+ p.getIme());
+                }
+            }
+        });
+    }
+    private void getUsersLocations(final int mod)
+    {
+        if(mod==0)
+        {
+            timer=new Timer();
+
+            lat=curLoc.getLatitude();
+            lon=curLoc.getLongitude();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run()
+                {
+
+                    ExecutorService transThread = Executors.newSingleThreadExecutor();
+                    transThread.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+
+
+                                if(lat!=0 && lon!=0 && mod==0) {
+                                    ArrayList<Player> players = MyPlacesHTTPHelper.getFriendsLocations(userName, String.valueOf(lat), String.valueOf(lon));
+                                    if (players != null)
+                                    {
+                                        Log.d("FriendsModSearch",""+mod);
+                                        guiNotifyUser(players);
+
+                                    }
+
+
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+
+
+                }
+            }, 1000, 2000);
+
+        }
+
     }
 }

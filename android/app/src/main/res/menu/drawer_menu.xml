@@ -24,6 +24,10 @@
             android:id="@+id/scanNN"
             android:icon="@drawable/ic_action_2_512"
             android:title="@string/scan" />
+        <item
+            android:id="@+id/model3dItem"
+            android:icon="@drawable/ic_action_2_512"
+            android:title="@string/model3D" />
     </group>
 
     <item android:title="@string/nav_sub_menu">

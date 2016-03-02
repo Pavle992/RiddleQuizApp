@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res"><file name="image" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\drawable-hdpi\image.png" qualifiers="hdpi" type="drawable"/><file name="settings" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\drawable-hdpi\settings.png" qualifiers="hdpi" type="drawable"/><file name="settings" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\drawable-mdpi\settings.png" qualifiers="mdpi" type="drawable"/><file name="settings" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\drawable-xhdpi\settings.png" qualifiers="xhdpi" type="drawable"/><file name="options" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\menu\options.xml" qualifiers="" type="menu"/><file path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\values\strings.xml" qualifiers=""><string-array name="pref_entryValues_cameraIndex">
+        <item>0</item>
+    </string-array><string name="pref_title_cameraIndex">Change camera</string><string name="menuItem_settings">Settings</string><string-array name="pref_entries_cameraIndex">
+        <item>Rear camera</item>
+    </string-array><string-array name="pref_entryValues_cameraResolution">
+        <item>320x240</item>
+    </string-array><string-array name="pref_entries_cameraResolution">
+        <item>320x240   (4:3)</item>
+    </string-array><string name="pref_defaultValue_cameraResolution">320x240</string><string name="pref_title_cameraResolution">Camera resolution</string><string name="prefCategory_title_camera">Camera settings</string></file><file name="preferences" path="D:\DIMA_Github\RiddleQuizApp\android\base\src\main\res\xml\preferences.xml" qualifiers="" type="xml"/></source><source path="D:\DIMA_Github\RiddleQuizApp\android\base\build\generated\res\rs\release"/><source path="D:\DIMA_Github\RiddleQuizApp\android\base\build\generated\res\generated\release"/></dataSet><dataSet config="release"><source path="D:\DIMA_Github\RiddleQuizApp\android\base\src\release\res"/></dataSet><mergedItems/></merger>

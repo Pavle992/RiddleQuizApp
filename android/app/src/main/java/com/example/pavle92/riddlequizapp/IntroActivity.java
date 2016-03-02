@@ -26,6 +26,8 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.activity_intro);
 
 
+
+
         /* Check if we successfully logged in before.
                 * If we did, redirect to home page
                 */

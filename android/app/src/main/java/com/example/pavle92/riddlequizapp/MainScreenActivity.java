@@ -331,6 +331,16 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
 
                         startActivityForResult(in33,9890);
                     break;
+                    case R.id.model3dItem:
+                        Intent in66 = new Intent(MainScreenActivity.this, ARSimple.class);
+////            in.putExtra("UserName",userName);
+//                        // startActivity(in33);
+//                        in33.putExtra("lat", curLoc.getLatitude());
+//                        in33.putExtra("log", curLoc.getLongitude());
+//
+//                        startActivityForResult(in33,9890);
+                        startActivity(in66);
+                        break;
                     case R.id.about_app:
                         Intent in44=new Intent(MainScreenActivity.this,About.class);
                         startActivity(in44);

@@ -333,12 +333,12 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                     break;
                     case R.id.model3dItem:
                         Intent in66 = new Intent(MainScreenActivity.this, ARSimple.class);
-////            in.putExtra("UserName",userName);
-//                        // startActivity(in33);
-//                        in33.putExtra("lat", curLoc.getLatitude());
-//                        in33.putExtra("log", curLoc.getLongitude());
-//
-//                        startActivityForResult(in33,9890);
+//            in.putExtra("UserName",userName);
+                        // startActivity(in33);
+//                        in66.putExtra("lat", curLoc.getLatitude());
+//                        in66.putExtra("log", curLoc.getLongitude());
+
+                        startActivityForResult(in66,9899);
                         startActivity(in66);
                         break;
                     case R.id.about_app:
@@ -918,6 +918,7 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             MakeToast("Place added!");
         else
         if(requestCode==9890) {
+            //qrcode or barcode
             if (resultCode == Activity.RESULT_OK) {
                 String lat = "";
                 String log = "";
@@ -926,6 +927,54 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                 String sl="";
                 Bundle b = data.getExtras();
                 if (b != null) {
+                    lat = b.getString("lat");
+                    log = b.getString("log");
+                    rd=b.getString("ridle");
+                    ht=b.getString("hint");
+                    sl=b.getString("solution");
+                }
+                boolean qft=true;//question from team
+                for (Marker m : markers) {
+                    if ((m.getPosition().latitude == Double.parseDouble(lat)) && (m.getPosition().longitude == Double.parseDouble(log))) {
+                        DBAdapterPlaces dbAdapterPlaces = new DBAdapterPlaces(this, userName);
+                        dbAdapterPlaces.OpenDB();
+                        dbAdapterPlaces.UpdatePlaceSolved(lat, log);
+
+                        dbAdapterPlaces.CloseDB();
+                        updateScore(userName);
+                        MakeToast("Place Solved, you earn 10 points");
+                        m.remove();
+                        qft = false;
+                    }
+                }
+                if(qft){
+                    //question from team QrScaned
+                    DBAdapterPlaces dbAdapterPlaces = new DBAdapterPlaces(this, userName);
+                    dbAdapterPlaces.OpenDB();
+                    dbAdapterPlaces.SavePlace(new Place(lat,log,name,rd,sl,ht));
+                    dbAdapterPlaces.UpdatePlaceSolved(lat, log);
+
+                    dbAdapterPlaces.CloseDB();
+                    updateScore(userName);
+
+                }
+
+            }
+
+
+        }
+        else
+        if(requestCode==9899) {
+            //3dmodel
+            if (resultCode == Activity.RESULT_OK) {
+                String lat = "";
+                String log = "";
+                String rd="";
+                String ht="";
+                String sl="";
+                Bundle b = data.getExtras();
+                if (b != null) {
+                    //meanjaj!!!
                     lat = b.getString("lat");
                     log = b.getString("log");
                     rd=b.getString("ridle");

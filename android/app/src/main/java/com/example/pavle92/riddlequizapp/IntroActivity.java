@@ -25,9 +25,6 @@ public class IntroActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-
-
-
         /* Check if we successfully logged in before.
                 * If we did, redirect to home page
                 */
@@ -77,4 +74,5 @@ public class IntroActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
 }

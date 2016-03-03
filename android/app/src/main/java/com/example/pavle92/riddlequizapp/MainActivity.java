@@ -119,6 +119,7 @@ public class MainActivity extends Activity
         if (settings.getString("logged", "").toString().equals("logged")) {
             Intent intent1 = new Intent(MainActivity.this, MainScreenActivity.class);
             startActivity(intent1);
+            finish();//
         }
 
         //after view created
@@ -180,6 +181,7 @@ public class MainActivity extends Activity
                 startActivity(in);
                 etxUser.setText("");
                 etxPass.setText("");
+                finish();//
             }
         });
     }
@@ -282,7 +284,7 @@ public class MainActivity extends Activity
                     etxUser.setText("");
                     etxPass.setText("");
 
-
+                    finish();//
                     //finish();
                 } else
                 {
@@ -324,7 +326,7 @@ public class MainActivity extends Activity
                     etxUser.setText("");
                     etxPass.setText("");
 
-
+                    finish();//
                     //finish();
                 } else {
                     //signup
@@ -378,7 +380,7 @@ public class MainActivity extends Activity
                             //in.putExtra("UserPicture",player.getImg());
                             player = null;
                             startActivity(in);
-
+                            finish();//
                             Toast.makeText(getApplicationContext(), "Created new Player", Toast.LENGTH_SHORT).show();
                             Toast.makeText(getApplicationContext(), player.getIme() + " " + player.getPrezime() + " " + player.getPass() + " " + player.getUser() + " " + player.getBroj(), Toast.LENGTH_SHORT).show();
                             finish();

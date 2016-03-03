@@ -23,6 +23,7 @@ public class GuestActivity extends Activity {
             public void onClick(View view) {
                 Intent li=new Intent(GuestActivity.this,MainActivity.class);
                 startActivity(li);
+                finish();//
             }
         });
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +31,7 @@ public class GuestActivity extends Activity {
             public void onClick(View view) {
                 Intent si=new Intent(GuestActivity.this,SignUpActivity.class);
                 startActivity(si);
+                finish();//
             }
         });
     }

@@ -50,20 +50,35 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/login"
-            android:id="@+id/btn_login" />
+            android:id="@+id/btn_login"
+            android:textColor="#B4CDCD"
+            android:background="@drawable/buttonshape"
+            android:textSize="25sp"
+            android:alpha="0.60"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"/>
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp" />
+            android:textSize="25sp"
+            android:alpha="0.60"
+            android:layout_marginBottom="20dp" />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/sign_up"
-            android:id="@+id/btn_signup" />
+            android:id="@+id/btn_signup"
+            android:textColor="#B4CDCD"
+            android:background="@drawable/buttonshape"
+            android:textSize="25sp"
+            android:alpha="0.60"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            />
+
     </LinearLayout>
 </RelativeLayout>

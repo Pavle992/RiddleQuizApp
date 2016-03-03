@@ -52,15 +52,18 @@ package com.example.pavle92.riddlequizapp;
 import android.Manifest;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.artoolkit.ar.base.ARActivity;
+import org.artoolkit.ar.base.ARToolKit;
 import org.artoolkit.ar.base.assets.AssetHelper;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 
@@ -72,6 +75,7 @@ public class ARSimple extends ARActivity {
 
 	private static final int MY_PERMISSIONS_REQUEST_CAMERA = 133;
 
+	private boolean button_view;
 
 
     /**
@@ -81,6 +85,7 @@ public class ARSimple extends ARActivity {
 
 
     private SimpleRenderer simpleRenderer = new SimpleRenderer();
+	private Button btn;
 
     /**
      * The FrameLayout where the AR view is displayed.
@@ -92,7 +97,17 @@ public class ARSimple extends ARActivity {
 		super.onCreate(savedInstanceState);      
 		setContentView(R.layout.activity_model3d);
 
-        AssetHelper assetHelper = new AssetHelper(getAssets());
+
+		btn= (Button) findViewById(R.id.question3d);
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Toast.makeText(getApplicationContext(),"Question tadaaa",Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(getApplicationContext(),"Data");
 
 		mainLayout = (FrameLayout)this.findViewById(R.id.mainLayout);
@@ -108,10 +123,15 @@ public class ARSimple extends ARActivity {
 		mainLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+
+
+
                 simpleRenderer.click();
+
 
                 Vibrator vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 vib.vibrate(40);
+
             }
 
         });

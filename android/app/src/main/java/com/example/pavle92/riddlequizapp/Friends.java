@@ -132,6 +132,7 @@ public class Friends extends Activity
         txtSearch=(TextView)findViewById(R.id.txtSearchList);
         lvPaired=(ListView)findViewById(R.id.listViewParied);
         lvPaired.setAdapter(adapterPaired);
+        //after clicking on paired we offer an option to cancel friendship
         lvPaired.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -487,7 +488,7 @@ public class Friends extends Activity
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                            if (arrayListAllBluetoothDevices.size() < 1)
-                             {
+                             {//if the list of bluetooth devices is empty
                                Toast.makeText(context, "Found new Device", Toast.LENGTH_SHORT).show();
                                adapterAll.add(device.getName() + "\n" + device.getAddress());
                                arrayListAllBluetoothDevices.add(device);
@@ -496,12 +497,14 @@ public class Friends extends Activity
                             else {
                                boolean flag = true;
 
+                               //we check if device is already in the list
                                for (int i = 0; i < arrayListAllBluetoothDevices.size(); i++) {
                                    if (device.getAddress().equals(arrayListAllBluetoothDevices.get(i).getAddress())) {
                                        flag = false;
                                    }
                                }
                                if (flag) {
+                                   //if not in the list add it to it
                                    Toast.makeText(context, "Found new Device", Toast.LENGTH_SHORT).show();
                                    adapterAll.add(device.getName() + "\n" + device.getAddress());
                                    arrayListAllBluetoothDevices.add(device);
@@ -520,7 +523,7 @@ public class Friends extends Activity
                 final int prevState	= intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
 
                 if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
-
+                //if other user accept friend request, make friendship
                     adapterPaired.notifyDataSetChanged();
 
                     MakeFriends(bdDevice);

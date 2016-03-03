@@ -49,6 +49,9 @@
 
 package com.example.pavle92.riddlequizapp;
 
+import android.opengl.GLSurfaceView;
+import android.widget.Button;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import org.artoolkit.ar.base.ARToolKit;
@@ -61,6 +64,9 @@ import org.artoolkit.ar.base.rendering.Cube;
 public class SimpleRenderer extends ARRenderer {
 
 	private int markerID = -1;
+
+	private Button btn;
+
 
 	private Cube cube = new Cube(40.0f, 0.0f, 0.0f, 20.0f);
 	private float angle = 0.0f;
@@ -78,6 +84,9 @@ public class SimpleRenderer extends ARRenderer {
 
 	public void click() {
 		spinning = !spinning;
+	}
+	public int getMarkerID(){
+		return markerID;
 	}
 
 	public void draw(GL10 gl) {
@@ -101,6 +110,7 @@ public class SimpleRenderer extends ARRenderer {
 			gl.glPushMatrix();
 			gl.glRotatef(angle, 0.0f, 1.0f, 0.0f);
 			gl.glTranslatef(0.0f, 0.0f, -20.0f);
+
 
 			cube.draw(gl);
 			gl.glPopMatrix();

@@ -4,14 +4,22 @@
     android:layout_height="fill_parent"
     tools:context="com.example.pavle92.riddlequizapp.Friends">
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="My Friends"-->
+        <!--android:id="@+id/txtFriendsList"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true" />-->
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="My Friends"
-        android:id="@+id/txtFriendsList"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/myfriends123"
+        android:id="@+id/txtFriendsList"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"

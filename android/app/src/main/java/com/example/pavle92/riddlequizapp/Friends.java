@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +48,9 @@ public class Friends extends Activity
     private ProgressDialog mProgressDlg;
     private BluetoothDevice bdDevice;
     private BluetoothDevice bdDeviceFriend;
-    TextView txtFriends,txtSearch;
+    //TextView txtFriends;
+    ImageView txtFriends;
+    TextView txtSearch;
     int index=-1;
     private String userName;
     private Handler guiThread;
@@ -128,7 +131,8 @@ public class Friends extends Activity
 
     private void Init()
     {
-        txtFriends=(TextView)findViewById(R.id.txtFriendsList);
+        //txtFriends=(TextView)findViewById(R.id.txtFriendsList);
+        txtFriends=(ImageView)findViewById(R.id.txtFriendsList);
         txtSearch=(TextView)findViewById(R.id.txtSearchList);
         lvPaired=(ListView)findViewById(R.id.listViewParied);
         lvPaired.setAdapter(adapterPaired);

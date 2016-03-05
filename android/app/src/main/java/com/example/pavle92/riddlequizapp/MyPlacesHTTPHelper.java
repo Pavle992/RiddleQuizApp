@@ -834,4 +834,81 @@ public class MyPlacesHTTPHelper {
         return encodedImage;
     }
 
+    public static Place getNearestPlace(double lati,double longi) {
+        ArrayList<Place> places = new ArrayList<Place>();
+        String retStr = null;
+        try {
+            URL url = new URL("http://" + IP_ADDRESS + "/RiddleQuizApp/ServerSide/VratiPitanje.php");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(10000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            Log.e("http", "por1");
+
+            JSONObject data = new JSONObject();
+            data.put("lat", String.valueOf(lati));
+            data.put("log", String.valueOf(longi));
+
+            Uri.Builder builder = new Uri.Builder().appendQueryParameter("action", data.toString());
+            String query = builder.build().getEncodedQuery();
+
+            Log.e("http", "por4");
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            bw.write(query);
+            Log.e("http", "por5");
+            bw.flush();
+            bw.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                String str = inputStreamToString(conn.getInputStream());
+                Log.e("pitanje najblize", str);
+                JSONArray jsonArray = new JSONArray(str);
+
+                Log.e("Petlja najblize", "Pet");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
+
+                    Log.e("Obj", "Obj");
+
+                    Place place = new Place();
+
+                    place.setUserName(jsonObject.getString("id_korisnika"));
+
+                    Log.e("USer najblizeg", jsonObject.getString("id_korisnika"));
+
+                    place.setName(jsonObject.getString("naziv"));
+                    place.setLongitude(jsonObject.getString("lon"));
+                    place.setLatitude(jsonObject.getString("lat"));
+                    place.setRidle(jsonObject.getString("riddle"));
+                    place.setSolution(jsonObject.getString("solution"));
+                    place.setHint(jsonObject.getString("hint"));
+
+                    Log.e("Hint", jsonObject.getString("hint"));
+
+                    place.setVisible(Boolean.valueOf(jsonObject.getString("visible")));
+                    place.setSolved(Boolean.valueOf(jsonObject.getString("solved")));
+
+
+                    places.add(place);
+                    //   Log.e("Mesto JSON: ",jsonArray.getString(i));
+//                    Log.e("Mesto JSON: ", jsonArray.getJSONObject(i).toString());
+
+                }
+            } else
+                Log.e("HTTPCOde_Error", String.valueOf(responseCode));
+
+
+        } catch (Exception e) {
+            Log.e("Greska", "greska");
+            e.printStackTrace();
+        }
+        return places.get(0);
+    }
+
 }

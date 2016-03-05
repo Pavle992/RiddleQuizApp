@@ -337,9 +337,11 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
                         // startActivity(in33);
 //                        in66.putExtra("lat", curLoc.getLatitude());
 //                        in66.putExtra("log", curLoc.getLongitude());
+                        in66.putExtra("lat", curLoc.getLatitude());
+                        in66.putExtra("log", curLoc.getLongitude());
 
                         startActivityForResult(in66,9899);
-                        startActivity(in66);
+                        //startActivity(in66);
                         break;
                     case R.id.about_app:
                         Intent in44=new Intent(MainScreenActivity.this,About.class);

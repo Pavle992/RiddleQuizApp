@@ -50,6 +50,9 @@
 package com.example.pavle92.riddlequizapp;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.opengl.Visibility;
@@ -57,6 +60,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -74,8 +78,7 @@ public class ARSimple extends ARActivity {
 
 
 	private static final int MY_PERMISSIONS_REQUEST_CAMERA = 133;
-
-	private boolean button_view;
+	public static final String PREFS_NAME = "LoginPrefs";
 
 
     /**
@@ -85,12 +88,17 @@ public class ARSimple extends ARActivity {
 
 
     private SimpleRenderer simpleRenderer = new SimpleRenderer();
-	private Button btn;
 
     /**
      * The FrameLayout where the AR view is displayed.
      */
     private FrameLayout mainLayout;
+	private double lat;
+	private double log;
+	private String userName;
+	private String ridle="";
+	private String hint="";
+	private String solution="";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -98,15 +106,15 @@ public class ARSimple extends ARActivity {
 		setContentView(R.layout.activity_model3d);
 
 
-		btn= (Button) findViewById(R.id.question3d);
-		btn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+		Bundle bnd=getIntent().getExtras();
+		lat=bnd.getDouble("lat");
+		log=bnd.getDouble("log");
 
-				Toast.makeText(getApplicationContext(),"Question tadaaa",Toast.LENGTH_SHORT).show();
-			}
-		});
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		userName=settings.getString("UserName", "");
 
+
+		//assets
 		AssetHelper assetHelper = new AssetHelper(getAssets());
         assetHelper.cacheAssetFolder(getApplicationContext(),"Data");
 
@@ -131,6 +139,39 @@ public class ARSimple extends ARActivity {
 
                 Vibrator vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 vib.vibrate(40);
+
+
+
+//                    Toast.makeText(this,marker.getTitle(),Toast.LENGTH_SHORT).show();
+
+
+
+				Thread t1=new Thread(new Runnable() {
+					@Override
+					public void run() {
+
+						Intent in=new Intent(ARSimple.this,AnswerBox.class);
+
+						Place nearest=MyPlacesHTTPHelper.getNearestPlace(lat,log);
+						in.putExtra("lat", Double.valueOf(nearest.getLatitude()));
+						in.putExtra("log",Double.valueOf(nearest.getLongitude()));
+						in.putExtra("riddleQuestionAnsw",nearest.getRidle() + "&" + nearest.getHint() + "&" + nearest.getSolution());
+						in.putExtra("userName",userName);
+						in.putExtra("userNameQ","RiddleQuizTeam");
+						Log.e("QQQQ", "RiddleQuizTeam");
+						startActivityForResult(in, 9890);
+					}
+				});
+				t1.start();
+
+				try {
+					t1.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+
+
 
             }
 
@@ -174,4 +215,29 @@ public class ARSimple extends ARActivity {
 //			}
 //		}
 //	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(requestCode==9890) {
+			if (resultCode == Activity.RESULT_OK) {
+				Bundle b = data.getExtras();
+				b.putString("ridle",ridle);
+				b.putString("hint",hint);
+				b.putString("solution",solution);
+
+				Intent result=new Intent();
+				result.putExtras(b);
+				setResult(Activity.RESULT_OK, result);
+
+				finish();
+
+			}
+
+
+		}
+
+	}
 }

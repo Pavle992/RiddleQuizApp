@@ -57,6 +57,8 @@ import javax.microedition.khronos.opengles.GL10;
 import org.artoolkit.ar.base.ARToolKit;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.Cube;
+import org.artoolkit.ar.base.rendering.Pyramid;
+import org.artoolkit.ar.base.rendering.TextureCube;
 
 /**
  * A very simple Renderer that adds a marker and draws a cube on it.
@@ -69,6 +71,9 @@ public class SimpleRenderer extends ARRenderer {
 
 
 	private Cube cube = new Cube(40.0f, 0.0f, 0.0f, 20.0f);
+	private Pyramid pyramid=new Pyramid(40.0f, 0.0f, 0.0f, 20.0f);
+	private TextureCube textureCube=new TextureCube(40.0f, 0.0f, 0.0f, 20.0f);
+
 	private float angle = 0.0f;
 	private boolean spinning = true;
 
@@ -112,6 +117,9 @@ public class SimpleRenderer extends ARRenderer {
 			gl.glTranslatef(0.0f, 0.0f, -20.0f);
 
 
+			//textureCube.loadTexture(gl);
+			//textureCube.draw(gl);
+			//pyramid.draw(gl);
 			cube.draw(gl);
 			gl.glPopMatrix();
 

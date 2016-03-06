@@ -149,7 +149,7 @@ public class MainActivity extends Activity
         etxUser=(EditText)findViewById(R.id.etx_username);
         etxPass=(EditText)findViewById(R.id.etx_password);
         btnLogin=(Button)findViewById(R.id.btn_login);
-        btnSignUp=(Button)findViewById(R.id.btn_signup);
+        //btnSignUp=(Button)findViewById(R.id.btn_signup);
         im=(ImageView)findViewById(R.id.image);
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
@@ -174,16 +174,16 @@ public class MainActivity extends Activity
             }
         });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent in = new Intent(MainActivity.this, SignUpActivity.class);
-                startActivity(in);
-                etxUser.setText("");
-                etxPass.setText("");
-                finish();//
-            }
-        });
+//        btnSignUp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent in = new Intent(MainActivity.this, SignUpActivity.class);
+//                startActivity(in);
+//                etxUser.setText("");
+//                etxPass.setText("");
+//                finish();//
+//            }
+//        });
     }
 
     public void getPlayer()

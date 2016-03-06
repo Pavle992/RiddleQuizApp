@@ -51,6 +51,7 @@ package com.example.pavle92.riddlequizapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -80,7 +81,7 @@ public class ARSimple extends ARActivity {
 	private static final int MY_PERMISSIONS_REQUEST_CAMERA = 133;
 	public static final String PREFS_NAME = "LoginPrefs";
 
-
+	private Context kontekst;
     /**
      * A custom renderer is used to produce a new visual experience.
      */
@@ -106,6 +107,7 @@ public class ARSimple extends ARActivity {
 		setContentView(R.layout.activity_model3d);
 
 
+		kontekst=getApplicationContext();
 		Bundle bnd=getIntent().getExtras();
 		lat=bnd.getDouble("lat");
 		log=bnd.getDouble("log");
@@ -239,5 +241,9 @@ public class ARSimple extends ARActivity {
 
 		}
 
+	}
+
+	public Context getInstance(){
+		return kontekst;
 	}
 }

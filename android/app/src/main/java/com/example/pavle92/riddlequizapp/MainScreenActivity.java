@@ -458,13 +458,6 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             }
 
         }
-        else if (id == R.id.highscore)
-        {
-
-            Intent in = new Intent(this, HighScore.class);
-            in.putExtra("username",userName);
-            startActivity(in);
-        }
         else if(id==R.id.refresh)
         {
             Toast.makeText(this, "Getting places!", Toast.LENGTH_SHORT).show();
@@ -520,12 +513,6 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
         {
             Intent in = new Intent(this, MyPlacesList.class);
             in.putExtra("UserName",userName);
-            startActivity(in);
-        }
-        else if(id==R.id.scan)
-        {
-            Intent in = new Intent(this, ScanActivity.class);
-//            in.putExtra("UserName",userName);
             startActivity(in);
         }
         else if(id==R.id.search1)

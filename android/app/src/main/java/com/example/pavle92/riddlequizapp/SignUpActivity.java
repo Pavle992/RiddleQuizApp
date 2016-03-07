@@ -93,16 +93,12 @@ public class SignUpActivity extends Activity implements View.OnClickListener
                     {
                         transThread.submit(new Runnable() {
                             @Override
-                            public void run()
-                            {
+                            public void run() {
 
-                                try
-                                {
+                                try {
                                     MyPlacesHTTPHelper.SendMyPlayer(player);
                                     //prebaci ovde odg od servera i na osnovu njega ispitai por da li je player upisan
-                                }
-                                catch (Exception e)
-                                {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -111,6 +107,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener
                         });
                         Toast.makeText(this, "Created new Player", Toast.LENGTH_SHORT).show();
                         Toast.makeText(this, player.getIme() + " " + player.getPrezime() + " " + player.getPass() + " " + player.getUser() + " " + player.getBroj(), Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(SignUpActivity.this,MainActivity.class);
+                        startActivity(i);
                         finish();
                     }
                     else

@@ -45,7 +45,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"/>
             <TextView
-                android:textColor="#3F51B5"
+                android:textColor="#add8e6"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/txtIme2"
                 android:layout_width="fill_parent"
@@ -64,7 +64,7 @@
                 android:gravity="center"/>
 
             <TextView
-                android:textColor="#3F51B5"
+                android:textColor="#add8e6"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/txtPrezime2"
                 android:layout_width="fill_parent"
@@ -83,7 +83,7 @@
                 android:gravity="center"/>
 
             <TextView
-                android:textColor="#3F51B5"
+                android:textColor="#add8e6"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/txtLevel"
                 android:layout_width="fill_parent"
@@ -102,7 +102,7 @@
                 android:gravity="center"/>
 
             <TextView
-                android:textColor="#3F51B5"
+                android:textColor="#add8e6"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

@@ -30,7 +30,12 @@
     <string name="facebook_app_id">1534172610208435</string>
     <string name="logout">Logout</string>
     <string name="cur_loc">Current location</string>
-    <string name="descrPtr">This is treasure hunt like application. Blablablabla Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consectetur diam id aliquam scelerisque. Donec ultrices lacus vel dignissim pharetra. Vivamus pharetra augue quis rhoncus placerat. Sed ultricies at risus non cursus. Nam rutrum leo nec placerat consectetur. Vestibulum feugiat eleifend diam, nec interdum augue tincidunt sit amet. Praesent feugiat est auctor lacus consectetur, vitae pellentesque dolor laoreet.</string>
+    <string name="descrPtr">
+        Pavle Vidanovic was born in 1992, Pirot, Serbia. He graduated from Faculty of Electronic Engineering Nis in July 2015 and holds bachelor degree in Computer Science of Electrical Engineering. He is currently graduate student at Politencnico to Milano.<br/>
+    </string>
+    <string name="descrPtr1">
+        Nenad Petrovic was born in 1992, Pirot, Serbia. He graduated from Faculty of Electronic Engineering Nis in July 2015 and holds bachelor degree in Computer Science of Electrical Engineering. He is currently graduate student at Politencnico to Milano.
+    </string>
     <string name="myfiends">My Friends</string>
     <string name="radious">Change Radious</string>
     <string name="model3D">3D Model</string>

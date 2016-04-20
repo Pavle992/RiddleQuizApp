@@ -10,8 +10,6 @@
         android:orderInCategory="100"  android:icon="@drawable/ic_action_refresh" app:showAsAction="ifRoom"/>
     <item android:id="@+id/myplaces" android:title="@string/myplaces"
         android:orderInCategory="100" app:showAsAction="never"/>
-    <item android:id="@+id/myfriends" android:title="@string/myfriends"
-        android:orderInCategory="100" app:showAsAction="never"/>
     <item android:id="@+id/radious" android:title="@string/radious"
         android:orderInCategory="100" app:showAsAction="never"/>
 

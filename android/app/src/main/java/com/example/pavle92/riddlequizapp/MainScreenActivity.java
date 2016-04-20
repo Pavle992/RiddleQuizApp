@@ -503,12 +503,6 @@ public class MainScreenActivity extends ActionBarActivity implements OnMapReadyC
             setUpMap(name);
            // TrackMe();
         }
-        else if(id==R.id.myfriends)
-        {
-            Intent in = new Intent(this, Friends.class);
-            in.putExtra("UserName",userName);
-            startActivity(in);
-        }
         else if(id==R.id.myplaces)
         {
             Intent in = new Intent(this, MyPlacesList.class);

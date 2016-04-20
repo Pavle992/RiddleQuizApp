@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 public class MyPlacesHTTPHelper {
-    private static String IP_ADDRESS = "192.168.1.5";
+    private static String IP_ADDRESS = "192.168.43.235";
 
     public static String SendMyPlace(Place place, String userName) {
 
